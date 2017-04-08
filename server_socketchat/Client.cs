@@ -17,7 +17,7 @@ namespace server_socketchat
         private Thread ReadThread { get; set; }
 
         public string Username { get; set; } = "Default";
-        public string Roomname { get; set; } = "Default";
+        public string Roomname { get; set; } = "Global";
 
         public Client(TcpClient tcpClient)
         {
@@ -49,6 +49,7 @@ namespace server_socketchat
                     Console.WriteLine($"Welcome {Username}!");
                     break;
                 case SocketActions.ClientChat:
+                    Roomname = socketAction.Message;
                     break;
                 case SocketActions.ClientGoodbye:
                     ReadThread.Abort();

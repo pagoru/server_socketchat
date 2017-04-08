@@ -11,7 +11,7 @@ namespace server_socketchat
     {
         public int Port { get; set; } = 55555;
 
-        private List<Client> ClientList = new List<Client>();
+        private List<Client> _clientList = new List<Client>();
 
         public void Start()
         {
@@ -26,7 +26,7 @@ namespace server_socketchat
                     Thread.Sleep(100);
                     Console.WriteLine("Waiting for new clients...");
 
-                    ClientList.Add(new Client(listener.AcceptTcpClient()));
+                    _clientList.Add(new Client(listener.AcceptTcpClient()));
                 }
             }
             catch (Exception e)
@@ -38,13 +38,13 @@ namespace server_socketchat
 
         public void RemoveClient(string username)
         {
-            ClientList = ClientList.FindAll(c => c.Username != username);
+            _clientList = _clientList.FindAll(c => c.Username != username);
         }
 
         public void SendRoomMessage(string username, string roomname, string message)
         {
             //.FindAll(c => c.Username != username)
-            ClientList.FindAll(c => c.Roomname == roomname).ForEach(c => c.SendMessage(
+            _clientList.FindAll(c => c.Roomname == roomname).ForEach(c => c.SendMessage(
                     new SocketAction(SocketActions.ServerSendMessage, $"{username}: {message}", true)
                 )
             );
