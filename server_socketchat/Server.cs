@@ -26,7 +26,7 @@ namespace server_socketchat
                     Thread.Sleep(100);
                     Console.WriteLine("Waiting for new clients...");
 
-                    _clientList.Add(new Client(listener.AcceptTcpClient()));
+                    AddClient(new Client(listener.AcceptTcpClient()));
                 }
             }
             catch (Exception e)
@@ -36,16 +36,40 @@ namespace server_socketchat
 
         }
 
+        public int ClientCount()
+        {
+            return _clientList.Count;
+        }
+
+        public void AddClient(Client client)
+        {
+            _clientList.Add(client);
+        }
+
         public void RemoveClient(string username)
         {
             _clientList = _clientList.FindAll(c => c.Username != username);
         }
 
+        public void JoinRoom(string username, string roomname)
+        {
+            SendToRoom($"{username} ha entrat a la sala.", roomname, username);
+        }
+
+        public void LeaveRoom(string username, string roomname)
+        {
+            SendToRoom($"{username} s'ha anat de la sala.", roomname, username);
+        }
+
         public void SendRoomMessage(string username, string roomname, string message)
         {
-            //.FindAll(c => c.Username != username)
-            _clientList.FindAll(c => c.Roomname == roomname).ForEach(c => c.SendMessage(
-                    new SocketAction(SocketActions.ServerSendMessage, $"{username}: {message}", true)
+            SendToRoom($"{username}: {message}", roomname, null);
+        }
+
+        private void SendToRoom(string message, string roomname, string noUsername)
+        {
+            _clientList.FindAll(c => c.Roomname == roomname && c.Username != noUsername).ForEach(c => c.SendMessage(
+                    new SocketAction(SocketActions.ServerSendMessage, message, true)
                 )
             );
         }

@@ -9,7 +9,8 @@ namespace server_socketchat
         ClientSendMessage, //Cliente envia mensaje a un chat
         ServerSendMessage, //Servidor envia mensaje a un chat (clientes/broadcast)
         ClientChat, //Cliente se establece en una sala de chat
-        ClientGoodbye
+        ClientGoodbye,
+        CommandUsuaris
     }
 
     public class SocketAction
